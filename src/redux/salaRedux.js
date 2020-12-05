@@ -1,0 +1,172 @@
+import {firestore} from '../firebase'
+import shortid from 'shortid'
+
+//constantes
+const dataInicial ={
+    infoSala : {roomName:''},
+    idSala:'',
+    loading2:false,
+    haySala:false,
+    salaError: false
+}
+
+//types
+const LOADING_2 = 'LOADING_2'
+const CREAR_SALA = 'CREAR_SALA'
+const MODIFICAR_NUMERO = 'MODIFICAR_NUMERO'
+const LEER_SALA = 'LEER_SALA'
+const LEER_CONTENIDO_SALA = 'LEER_CONTENIDO_SALA'
+const UNIR_SALA = 'UNIR_SALA'
+const SALIR_SALA = 'SALIR_SALA'
+const SALA_ERROR = 'SALA_ERROR'
+
+
+
+//reducer
+export default function salaReducer( state = dataInicial, action){
+    switch (action.type) {
+        case LOADING_2:
+            return { ...state,loading2:true}
+        case CREAR_SALA:
+            return { ...state,loading2:false, haySala:true, idSala: action.payload }
+            case MODIFICAR_NUMERO:
+                return{...state } 
+        case LEER_SALA: 
+        case UNIR_SALA:
+            return {...state , loading2:false, idSala:action.payload, haySala:true,  }
+        case LEER_CONTENIDO_SALA:
+            return {...state, infoSala: action.payload }
+        case SALIR_SALA:
+            return{...dataInicial}
+        case SALA_ERROR :
+                return {...state, loading2:false, salaError:true}
+        default:
+            return state
+    }
+}
+
+//action
+export const crearSalaAction = (nombreSala, name) => async (dispatch) => {
+    dispatch({
+        type: LOADING_2
+    })
+    try {
+        const sala = {
+            currentTurn:1,
+            roomName:nombreSala,
+            player:[{
+                id:shortid.generate(),
+                playerName:name,
+                turn:1,
+                show:true,
+                totalScore:0
+                }]
+        }
+        await firestore.collection('diezmil').add(sala).then((docRef)=>{
+            dispatch({
+                type: CREAR_SALA,
+                payload: docRef.id
+            })
+            localStorage.setItem('idSala', docRef.id)
+        })
+    } catch (error) { console.log(error) }
+}
+
+export const leerSalaAction = () =>  (dispatch, getState) => {
+    //const idSala  = getState().sala.nombreSala
+    if(localStorage.getItem('idSala')){
+        const idSala = localStorage.getItem('idSala')
+        dispatch({
+            type:LEER_SALA,
+            payload: idSala
+        })
+        try { 
+                firestore.collection('diezmil').doc(idSala).onSnapshot((snapshot)=>{
+                    const jugadores = snapshot.data()
+                    dispatch({
+                    type:LEER_CONTENIDO_SALA,
+                    payload:jugadores
+                    })
+                })
+        } catch (error) { console.log(error) }
+    }
+    
+}
+
+export const unirSalaAction = (nombreSala, name) => async (dispatch, getState) => {
+    dispatch({
+        type: LOADING_2
+    })
+    try {
+        const salaRef = firestore.collection('diezmil')
+        const existeSala =  salaRef.where('roomName','==',nombreSala);
+        existeSala.get().then((docRef)=>{
+            //console.log(docRef);
+            
+            if(docRef.empty){
+                dispatch({
+                    type: SALA_ERROR
+                })
+                console.log('no existe la sala');
+                setTimeout(() => {
+                    dispatch({
+                        type: SALIR_SALA
+                    })
+                }, 3000);
+            }else{
+                firestore.collection('diezmil').doc(docRef.docs[0].id).get()
+                .then(function(doc){
+                    //console.log(doc.data().player.length); 
+                    const cantidadJugadores = doc.data().player.length;
+                    const player2 ={
+                        id:shortid.generate(),
+                        playerName:name,
+                        turn:cantidadJugadores + 1,
+                        show:false,
+                        totalScore:0
+                    }
+                    const player =doc.data().player.map((player)=>{return player})
+                    player.push(player2)
+                    console.log(player);
+                    firestore.collection('diezmil').doc(docRef.docs[0].id).set({
+                        player: player
+                    }, { merge: true });
+                    localStorage.setItem('idSala', docRef.docs[0].id)
+                    dispatch({
+                        type: UNIR_SALA,    
+                        payload :docRef.docs[0].id
+                    })
+                })
+            }
+        })
+    } catch (error) { console.log(error) }
+}
+
+export const salirSalaAction = (idSala, name) => async (dispatch, getState) => {
+    dispatch({
+        type: LOADING_2
+    })
+    const {player} = getState().sala.infoSala
+    const playerFiltrado = player.filter(jug => jug.playerName !== name )
+    const newPlayer = playerFiltrado.map((jugador,index)=>{
+        jugador.turn = index + 1
+        return jugador
+    })
+    try {
+        await firestore.collection('diezmil').doc(idSala).set({
+            player: newPlayer
+        }, { merge: true });   
+        dispatch({
+            type: SALIR_SALA
+        })
+        localStorage.removeItem('idSala')
+    } catch (error) { console.log(error) }
+    
+}
+
+
+
+
+
+
+
