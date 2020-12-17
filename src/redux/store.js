@@ -3,10 +3,12 @@ import thunk from 'redux-thunk'
 
 import userReducer, {leerUserAction} from './loginRedux'
 import salaReducer from './salaRedux'
+import DadosReducer from './dadosRedux'
 
 const rootReducer = combineReducers({
     usuario: userReducer,
-    sala:salaReducer
+    sala:salaReducer,
+    dados:DadosReducer
 })
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

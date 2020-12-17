@@ -8,13 +8,14 @@ body {
     overflow: hidden;
     width: 100%;
   }
+  
 
   .dice {
     
     justify-content: center;
     display: grid;
-    grid-column-gap: 6rem;
-    grid-row-gap: 6rem;
+    grid-column-gap: 10rem;
+    grid-row-gap: 11rem;
     grid-template-areas:   'd1 .  d2'
                           'd3 . d4'
                             '.d5.' ;   
@@ -65,18 +66,33 @@ body {
   }
   #die-1{
     grid-area: d1;
+    box-shadow: 52px 48px 40px 59px white;
+    width: 1px;
+    height: 5px;
   }
   #die-2 {
     grid-area: d2;
+    box-shadow: 52px 48px 40px 59px white;
+    width: 1px;
+    height: 5px;  
   }
   #die-3 {
     grid-area: d3;
+    box-shadow: 52px 48px 40px 59px white;
+    width: 1px;
+    height: 5px;  
   }
   #die-4{
     grid-area: d4;
+    box-shadow: 52px 48px 40px 59px white;
+    width: 1px;
+    height: 5px;  
   }
   #die-5 {
     grid-area: d5;
+    box-shadow: 52px 48px 40px 59px white;
+    width: 1px;
+    height: 5px;
   }
   .even-roll[data-roll="1"] {
     transform: rotateX(360deg) rotateY(720deg) rotateZ(360deg);
@@ -211,5 +227,12 @@ body {
     cursor: pointer;
   }
   
+ .seTiro{
+    box-shadow: 52px 48px 40px 59px black !important;
+  }
+  .seGuardo{
+    box-shadow: 52px 48px 40px 59px red !important;
+  }
  
   
+ 

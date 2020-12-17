@@ -7,6 +7,7 @@ import {salirSalaAction} from '../redux/salaRedux'
 //import Calculos from './Calculos'
 //import Dice from './Dice'
 import Calculos from './Calculos'
+import Dice from './Dice'
 
 const Home = () => {
     const haySala = useSelector(store=> store.sala.haySala)
@@ -25,7 +26,7 @@ const Home = () => {
                 :haySala?
                     <>
                         <div>
-                            <Calculos/>
+                            <Dice/>
                         </div>
                         <div>{roomName}</div>
                         <button type='button'
