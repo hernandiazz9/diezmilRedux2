@@ -10,17 +10,13 @@ const dataInicial = {
     segundoTiroEnAdelante:false,
     puntajeDeTiro:0,
     jugadores:[],
-
-
 }
-
 //types
 const TIRAR_DADOS = 'TIRAR_DADOS'
 const TIRAR_DADOS_MAS_VECES = 'TIRAR_DADOS_MAS_VECES'
 const SUMAR_TIRO ='SUMAR_TIRO'
 const ARRAY_DADOS='ARRAY_DADOS'
 const ARRAY_DADOS_GUARDADOS='ARRAY_DADOS_GUARDADOS'
-
 
 //reducer
 export default function DadosReducer (state = dataInicial, action){

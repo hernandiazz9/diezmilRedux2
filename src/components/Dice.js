@@ -8,23 +8,25 @@ var dadosGuardados = [];
 const Dice = () => {
   const [dadosTirar, setDadosTirar] = useState(['.d1','.d2','.d3','.d4','.d5'])
   const [dadosGuardados, setDadosGuardados] = useState([])
-  const [valorDados, setValorDados] = useState([])
+  const [valorDadosHTML, setValorDadosHTML] = useState([])
+  const [dadoSeleccionado, setDadoSeleccionado] = useState(null)
+  const [dadoARevisarTres, setDadoARevisarTres] = useState([])
   const {seTiro} = useSelector(state => state.dados)
   //const valorDados = useSelector(state => state.dados.arrayDados)
   const dispatch = useDispatch()
 
   //const [arrayDados, setArrayDados] = useState([])
+  function rollDice() {
+    setDadoARevisarTres([])
     const arrayDados = []
-    function rollDice() {
-      
       const dice = [...document.querySelectorAll(dadosTirar)];
-      //console.log(dice,'dicc');
       dice.forEach(die => {
           toggleClasses(die);
           die.dataset.roll = getRandomNumber(1, 6);
           arrayDados.push(Number(die.dataset.roll))
       });
-      setValorDados(dice)
+      console.log(dice);
+      setValorDadosHTML(dice)
       dispatch(tirarDadosAction(arrayDados))
     }
     function toggleClasses(die) {
@@ -36,26 +38,51 @@ const Dice = () => {
       max = Math.floor(max);
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-    console.log(valorDados);
     useEffect(() => {
-      const dadosATirar = dadosTirar.filter(function(dado){
+      const dadosATirar = dadosTirar.filter(dado=>{
         return !dadosGuardados.includes(dado);
       })
       setDadosTirar(dadosATirar)
     }, [dadosGuardados])
 
-    const onClickDado = (  dadoNombre) =>{
-      console.log(valorDados);
-      const dadoEncontrado = valorDados.find((dado)=>{
+    const onClickDado = ( dadoNombre ) =>{
+      const dadoEncontrado = valorDadosHTML.find((dado)=>{
           return dado.id === dadoNombre
-      })
-      if(Number(dadoEncontrado.dataset.roll)!==1&&Number(dadoEncontrado.dataset.roll)!==5)return
-        console.log(dadoEncontrado.dataset.roll, dadoNombre);
+      });
+      setDadoSeleccionado(dadoEncontrado);
+      console.log(dadoEncontrado.id);
+      if(Number(dadoEncontrado.dataset.roll)!==1&&Number(dadoEncontrado.dataset.roll)!==5){
+        setDadoARevisarTres([...dadoARevisarTres, dadoEncontrado.dataset.roll]) 
+        
+      }else{
         dispatch(guardarDadoAction(dadoEncontrado.dataset.roll))
         setDadosGuardados ([...dadosGuardados,dadoNombre ])
-      }  
+      }
+    }  
+    var tresDadosSeleccionar={}
+    useEffect(() => {
+      console.log(valorDadosHTML);
+      dadoARevisarTres.forEach( x => { tresDadosSeleccionar[x] = (tresDadosSeleccionar[x] || 0)+1; });
+        Object.values(tresDadosSeleccionar).forEach(element => {
+          if(element === 3){
+            const encontrarTres = valorDadosHTML.filter(dado=>{
+              console.log(dado.dataset.roll,dadoSeleccionado.dataset.roll);
+              return dado.dataset.roll === dadoSeleccionado.dataset.roll
+            })
+            console.log(encontrarTres, 'enconytrar 3');
+            encontrarTres.forEach(dado=>{
+              setDadosGuardados (...dadosGuardados ,dado.id  )
+            })
+            //console.log(dadoSeleccionado.id);
+            //setDadosTirar(dadosTirar => dadosTirar.filter(dado=>dado===dadoSeleccionado.id))
+            //console.log(dadosTirar);
+            //console.log('son 3');
+          }
+        })  
+    }, [dadoARevisarTres])
+
       return (
-        <div>
+        <>
           <div className="dice">
             <div className={dadosTirar.includes('.d1')?'seTiro': 'seGuardo' }  
               id="die-1">
@@ -103,13 +130,12 @@ const Dice = () => {
               </button>
             </div>
           </div>
-          
           <button type="button" id="roll-button"
             onClick={rollDice}
             disabled={seTiro}
           >Roll Dice
           </button>
-        </div>
+        </>
       )
 }
     
