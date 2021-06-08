@@ -3,7 +3,7 @@ import thunk from 'redux-thunk'
 
 import userReducer, {leerUserAction} from './loginRedux'
 import salaReducer from './salaRedux'
-import DadosReducer from './dadosRedux'
+import DadosReducer from './nuevoRedux'
 
 const rootReducer = combineReducers({
     usuario: userReducer,
