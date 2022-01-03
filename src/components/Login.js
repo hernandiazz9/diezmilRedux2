@@ -15,13 +15,13 @@ const Login = (props) => {
 
     return (
         <div className="mt-5 text-center">
-            <h3>Ingreso con Google</h3>
+            <h3 id='ingresoGoogle'>Login with Google</h3>
             <hr/>
             <button 
                 className="btn btn-dark"
                 onClick={()=>dispatch(loginUserAction())}
                 disabled={loading}
-            >acceder
+            >go on
             </button>
         </div>
     )

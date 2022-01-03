@@ -4,14 +4,23 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   tirarDadosAction,
   guardarDadoAction,
-  sumarTresAction,
-  sumarEscalera,
-  todosDadosSelec,
+  seSumaronTodosLosDadosAction,
+  sePerdioLaRondaAction,
 } from "../redux/nuevoRedux";
+import { sumarPuntajeSalaAction } from "../redux/salaRedux";
 
 const Dice = () => {
   const dispatch = useDispatch();
-  const { seTiro, primerTiro, escalera, arrayDadosATirar } = useSelector((state) => state.dados);
+  const {
+    seTiro,
+    primerTiro,
+    arrayDadosATirar,
+    sePerdio,
+    puntajeDeTiro,
+    puntajeRonda,
+  } = useSelector((state) => state.dados);
+  const { infoSala } = useSelector((store) => store.sala);
+  const { user } = useSelector((store) => store.usuario);
   const [dadosTirar, setDadosTirar] = useState([
     ".d1",
     ".d2",
@@ -19,22 +28,20 @@ const Dice = () => {
     ".d4",
     ".d5",
   ]);
-  const [arrayDadoSelecValor, setarrayDadoSelecValor] = useState([]);
   const [arrayDadoSelec, setarrayDadoSelec] = useState([]);
-
   const [valorDadosHTML, setValorDadosHTML] = useState([]);
+  const [jugador, setJugador] = useState({ show: false });
 
-  const [arrayDadoSelecID, setArrayDadoSelecID] = useState([]);
-
+  //tirar dados
   function rollDice() {
-    setarrayDadoSelec([])
+    setarrayDadoSelec([]);
     const arrayDados = [];
-    const arrayDadoCreado = [2,2,2,5,3]
+    // const arrayDadoCreado = [2,1,3,5,5]
     const dice = [...document.querySelectorAll(dadosTirar)];
     dice.forEach((die, i) => {
       toggleClasses(die);
-      die.dataset.roll = arrayDadoCreado[i]
-      // die.dataset.roll = getRandomNumber(1, 6);
+      // die.dataset.roll = arrayDadoCreado[i]
+      die.dataset.roll = getRandomNumber(1, 6);
       arrayDados.push(Number(die.dataset.roll));
     });
     setValorDadosHTML(dice);
@@ -49,28 +56,62 @@ const Dice = () => {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-
-  useEffect(() => {//para resaltar dado tocado sumado
-    if(arrayDadosATirar.length===0)return;
-    const filtrarArrayATirar = valorDadosHTML.filter(dado=>!arrayDadosATirar.includes(dado) );
-    const arrayATirar = filtrarArrayATirar.map(dado=>dado.id)
+  //useEffect para crear el array para el nuevo tiro
+  useEffect(() => {
+    if (arrayDadosATirar.length === 5) {
+      console.log("se seleccionaron todos?");
+      dispatch(seSumaronTodosLosDadosAction());
+    }
+    //para resaltar dado tocado sumado
+    console.log(arrayDadosATirar, "array a tirar de action");
+    if (arrayDadosATirar.length === 0)
+      return setDadosTirar([".d1", ".d2", ".d3", ".d4", ".d5"]);
+    // if(!seTiro)return console.log('probando con setiro');
+    const filtrarArrayATirar = valorDadosHTML.filter(
+      (dado) => !arrayDadosATirar.includes(dado)
+    );
+    const arrayATirar = filtrarArrayATirar.map((dado) => dado.id);
     setDadosTirar(arrayATirar);
   }, [arrayDadosATirar]);
+  //click de cada dado
   const onClickDado = (dadoNombre) => {
-    const revisarSiRepite = arrayDadoSelec.map(dado=>dado.id===dadoNombre)
-    if(revisarSiRepite.includes(true))return console.log('repite');
+    // console.log('-- infoSala', infoSala);
+    const revisarSiRepite = arrayDadoSelec.map(
+      (dado) => dado.id === dadoNombre
+    );
+    if (revisarSiRepite.includes(true)) return console.log("repite");
     const dadoEncontrado = valorDadosHTML.find((dado) => {
       return dado.id === dadoNombre;
     });
-    setarrayDadoSelec(arrayDadoSelec => [...arrayDadoSelec, dadoEncontrado]);
+    setarrayDadoSelec((arrayDadoSelec) => [...arrayDadoSelec, dadoEncontrado]);
   };
+  //enviar array dado seleccionado al action
   useEffect(() => {
-    if(arrayDadoSelec.length===0)return;
+    if (arrayDadoSelec.length === 0) return;
     dispatch(guardarDadoAction(arrayDadoSelec));
   }, [arrayDadoSelec]);
 
-  //effect para sumar puntos en escalera
+  useEffect(() => {
+    if (puntajeDeTiro === 0 && seTiro) {
+      setTimeout(() => {
+        dispatch(sePerdioLaRondaAction());
+        dispatch(sumarPuntajeSalaAction(user, puntajeRonda));
+      }, 3000);
+    }
+  }, [seTiro]);
 
+  useEffect(() => {
+    if (infoSala.player) {
+      //if()// poner useffect para controlar cantidad  de render y bloquear el boton de roll cuando no te toca
+      const jugador = infoSala.player.filter((jug) => jug.id === user.uid);
+      setJugador(jugador[0]);
+    }
+  }, [infoSala.player]);
+  const guardarSiguiente = () => {
+    dispatch(sumarPuntajeSalaAction(user, puntajeRonda));
+    dispatch(sePerdioLaRondaAction());
+  };
+  console.log("jugador", jugador);
   return (
     <>
       <div className="dice">
@@ -141,15 +182,24 @@ const Dice = () => {
         </div>
       </div>
       <button
+        className={
+          jugador.show ? "btn mr-2 btn-warning" : "btn btn-secondary mr-2"
+        }
         type="button"
-        id="roll-button"
         onClick={rollDice}
-        disabled={seTiro}
+        disabled={seTiro || !jugador.show}
       >
         Roll Dice
       </button>
       {/* tengo que guardar punto */}
-      <button type="button">Guardar</button>
+      <button
+        className="btn btn-success"
+        disabled={!primerTiro}
+        onClick={() => guardarSiguiente()}
+        type="button"
+      >
+        {sePerdio ? "Siguiente" : "Guardar"}
+      </button>
     </>
   );
 };

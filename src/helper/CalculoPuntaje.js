@@ -1,4 +1,4 @@
-
+//no usado no usado
 
 const CalculoPuntaje = ({ arrayDados }) => {
  console.log(arrayDados);

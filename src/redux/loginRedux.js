@@ -1,22 +1,18 @@
 import { auth, provider } from '../firebase'
 
 //data inicial
-
 const dataInicial = {
     loading: false,
     activo: false,
     user:{
         nombre:null
     }
-
 }
-
 //types
 const LOADING = 'LOADING'
 const USUARIO_ERROR = 'USUARIO_ERROR'
 const USUARIO_EXITO = 'USUARIO_EXITO'
 const CERRAR_SESION = 'CERRAR_SESION'
-
 
 //reducer
 export default function userReducer (state = dataInicial, action){
@@ -33,7 +29,6 @@ export default function userReducer (state = dataInicial, action){
             return {...state} 
      }
 }
-
 
 //actions
 export const loginUserAction = () => async (dispatch) => {

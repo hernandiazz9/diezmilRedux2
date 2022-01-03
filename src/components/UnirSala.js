@@ -8,29 +8,33 @@ const UnirSala = () => {
     const [salaName, setSalaName] = React.useState('')
 
     const dispatch = useDispatch()
-    const nombreJugador = useSelector(store=> store.usuario.user.nombre)
+    const { user } = useSelector(store=> store.usuario)
 
     const onClick = () =>{
         if(salaName.trim()==='') return;
-
-        dispatch(unirSalaAction(salaName, nombreJugador))
-    }
+        dispatch(unirSalaAction(salaName, user))
+    } 
 
     return (
-        <div>
-            <span>Unir a Sala</span>
-            <input 
-                type="text"
-                onChange={e => setSalaName(e.target.value.toUpperCase())}
+        <div className="input-group input-group-sm mb-3">
+        <button
+          className="btn  btn-outline-secondary"
+          type="button"
+          id="button-addon1"
+          onClick={onClick}
+        >
+          Join
+        </button>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Room Name"
+          aria-describedby="button-addon1"
+          onChange={e => setSalaName(e.target.value.toUpperCase())}
                 value={salaName}
-            />
-            <button 
-                type='button'
-                onClick={onClick}
-            >
-                UnirSala
-            </button>
-        </div>
+        />
+        
+      </div>
     )
 }
 
