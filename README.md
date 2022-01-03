@@ -1,70 +1,87 @@
-# Getting Started with Create React App
+# DIEZMIL Dados
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+_Juego de dados **Real Time** creado con React Redux y Firebase. Logueate con Google crea una sala e invita a amigos con el nombre de sala a unirse a la partida._
 
-## Available Scripts
+## Imagenes 🎬
 
-In the project directory, you can run:
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Comenzando 🚀
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+_Estas instrucciones te permitirán obtener una copia del proyecto en funcionamiento en tu máquina local para propósitos de desarrollo y pruebas._
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Instalación 🔧
 
-### `npm run build`
+```
+git clone https://github.com/hernandiazz9/diezmilRedux2
+```
+```
+npm install
+```
+Conecta con un proyecto de Firebase Firestore y Auth.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+npm start
+```
+ 
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Mensiones.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+_Esta aplicación es la versión 2 creada desde cero con React Redux._
 
-### `npm run eject`
+## Construido con 🛠️
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+_Algunas de las tecnologías utlizadas_
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+* [Create-react-app](https://reactjs.org/) - Libreria web de Javascript.
+* [NPM](https://www.npmjs.com/) - Manejador de dependencias
+* [React-Redux](https://react-redux.js.org/) Manejo de estados globales
+* [React Router Dom](https://reactrouter.com/) - Router para React
+* [Firebase](https://firebase.google.com/) - Servicios Firestore & Auth
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+pd: Hay mas **Proyectos**!!!
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Reglas del Juego.
 
-### Code Splitting
+El objetivo del juego es llegar a 10.000 puntos.
+Cómo jugar:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Un jugador o una jugadora lanza 5 dados y obtiene 3,5,4,4 y 1, en este caso obtiene 150 puntos (100 por el número 1 y cincuenta por el número 5). Debe decidir si se planta y suma esa cantidad o realiza un nuevo lanzamiento con los otros tres dados.
+Si sigue jugando y obtiene 1,2 y 4, a los 150 puntos del primer lanzamiento se suman otros 100 puntos. Debe decidir si sigue jugando con los dos dados que le quedan o se planta y suma 250 puntos en el turno.
 
-### Analyzing the Bundle Size
+•    Si quiere seguir lanzando y no logra sumar puntos con los dos dados, es decir no obtiene ni un 1 ni un 5, además de perder el turno pierde los puntos y no suma nada.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+•    Si de los dos dados obtiene un 1 y un 3 entonces acumularía 350 puntos y debe decidir si plantarse o arriesgarse a seguir jugando con un solo dado. En el caso que decida lanzar ese único dado y obtener un número 1 o 5 aumentará los puntos acumulados y podrá seguir jugando con los cinco dados.
 
-### Making a Progressive Web App
+•    Otro ejemplo es que en el primer lanzamiento el jugador obtenga 1,3,3,4 y 2, por lo que estaría sumando  100 puntos. Si no se planta y al lanzar los cuatro dados obtiene 1,3,1 y 1 entonces sumaría un total de 1100 puntos, mil por los tres 1 del último lanzamiento y 100 del primer tiro.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+•    Entonces, durante cada turno se podrán realizar varios lanzamientos e ir sumando puntos o no. Cada vez que se suman los puntos se deberán anotar en una hoja, el primer jugador que sume diez mil puntos gana el partido.
+ 
+Tabla de posibles puntos en un solo lanzamiento.
+ 
+•    100 puntos con cada número 1
 
-### Advanced Configuration
+•    50 puntos con cada número 5
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+•    200 puntos con tres números 2
 
-### Deployment
+•    300 puntos con tres números 3
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+•    400 puntos con tres números 4
 
-### `npm run build` fails to minify
+•    500 puntos con tres números 5
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+•    500 puntos con escalera (1,2,3,4,5 o 2,3,4,5,6 o 3,4,5,6,1)
+
+•    1000 puntos con tres números 1
+
+•    10000 puntos con cinco números 1
+
+---
+⌨️ con ❤️ por [HDev](https://github.com/hernandiazz9) 😊
+
+
