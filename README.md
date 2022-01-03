@@ -3,7 +3,7 @@
 _Juego de dados **Real Time** creado con React Redux y Firebase. Logueate con Google crea una sala e invita a amigos con el nombre de sala a unirse a la partida._
 
 ## Imagenes 🎬
-
+<img width="1664" alt="Screen Shot 2022-01-03 at 11 06 26" src="https://user-images.githubusercontent.com/62017712/147927345-16ab48a1-92c3-4f7d-b7f8-350bde733796.png">
 
 
 ## Comenzando 🚀
